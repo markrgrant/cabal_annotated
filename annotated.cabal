@@ -1,7 +1,7 @@
 -- reference: https://www.haskell.org/cabal/users-guide/developing-packages.html
 
 -- There should only be one cabal file in a package, and the name of the package
--- is derived from the name of the file. 
+-- is derived from the name field in the global properties section.
 
 -- A cabal file consists of a mandatory 'global properties' section, zero or more
 -- library sections, and zero or more executable sections (although at least one library
