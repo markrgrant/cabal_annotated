@@ -1,0 +1,1 @@
+An annotated cabal file.

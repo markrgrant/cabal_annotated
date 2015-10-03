@@ -1,0 +1,147 @@
+-- reference: https://www.haskell.org/cabal/users-guide/developing-packages.html
+
+-- There should only be one cabal file in a package, and the name of the package
+-- is derived from the name of the file. 
+
+-- A cabal file consists of a mandatory 'global properties' section, zero or more
+-- library sections, and zero or more executable sections (although at least one library
+-- section or executable section). 
+
+-- Sections consist of field name, field value pairs.  Field names are case insensitive
+-- but field values are case sensitive.
+
+-- Tabs are not allowed in a cabal file.
+
+-- It is best that packages not contain both libraries and executables.  Separate the
+-- library modules into their own package and import it instead.
+
+-- Comments are preceded by '--' but they must be on their own lines.
+
+-- global properties (name and version are required fields)
+name:                   -- One or more alphanumeric characters separated by hyphens.
+                        -- Should be unique in the package universe namespace. Case-sensitive.
+                        -- Do not include version numbers.
+version:                -- One or more integers separated by dots.  The version number of the
+                        -- package.
+cabal-version:          -- Specifies the range of cabal versions that recognize this 
+                        -- package description file.  This field should always be included, and 
+                        -- placed towards the top of the global properties.
+build-type:             -- one of the constructors of the BuildType data type.  These are
+                        -- Simple, Configure, Make, Custom, and UnknownBuildType.  Custom is the
+                        -- default, and specifies that the Setup.hs file should be used.  
+license:                -- The type of license under which the package is distributed.  The value
+                        -- should be the name of a constructor of the 'License' data type
+                        -- such as MIT, BSD3, BSD4, AllRightsReserved, PublicDomain, etc.
+license-file:           -- The name of a file containing the precise license for this package.
+                        -- It is distributed with the package when it is installed.
+author:                 -- Freeform but should be the name of the original package author.
+maintainer:             -- The email address of the current package maintainer to whom users
+                        -- should send bug reports, feature requests, and patches.
+homepage:               -- The URL of the package homepage.  
+bug-reports:            -- The URL for sending bug reports.  usually either 'mailto: url' for 
+                        -- a person or mailing list, or 'http://url' for online bug tracker.
+copyright:              -- The content of a copyright notice, typically the name of the holder
+                        -- of the copyright on the package and the year(s) from which copyright
+                        -- is claimed.  For example: Copyright: (c) 2006-2007 Joe Bloggs
+category:               -- A classification category for use by Hackage.  Just put the upper
+                        -- levels of the module hierarchy here.
+stability:              -- The stability of the package, usually one of alpha, experimental, 
+                        -- provisional, stable.
+package-url:            -- The location of the source bundle for the package.  The distribution should
+                        -- be a Cabal package.
+synopsis:               -- A very compact summary of the package.  It should make no
+                        -- reference to the package name, nor that it's written in Haskell. 
+description:            -- A more extensive description of the package.  Haddock markup can be added.
+tested-with:            -- A list of compilers and versions against which the package has been tested.
+data-files:             -- A list of files to be installed for run-time use by the package.  Typically
+                        -- used for static data files or code templates. * wildcards can be used in
+                        -- file names only.
+data-dir:               -- The directory where Cabal looks for data files to install, relative to the
+                           source directory.  By default, Cabal will look in the source directory itself.
+extra-source-files:     -- A list of additional files to be included in source distributions built
+                        -- with 'setup sdist'.  These could be example files, READMEs, docs, etc.
+extra-tmp-files:        -- A list of additional files or directories to be removed by 'setup clean'.
+                        -- These would be additional files created by additional hooks.
+
+-- An optional library section.  There should be at most one such section.  The exposed-modules
+-- field is required.
+library
+  exposed-modules:      -- A list of modules added by this package.
+  other-modules:        -- A list of modules used by the library or executable but not exposed to users.
+                        -- For a library these would be hidden modules of the library.
+  exposed:              -- Either True or False, default is True.  Use False to support older packages
+                        -- whose modules may conflict due to a flat namespace.
+  default-language:     -- ? 
+  build-depends:        -- 
+  ghc-options:
+  extensions:
+
+-- an optional section that describes an executable program contained in the package.  The section
+-- header must include a name for the executable that must not contain spaces.  There should be one
+-- such section for each executable to be provided by the package.
+executable program1
+  build-depends:        -- A comma-separated list of packages needed to build this one.
+                        -- Each package can be annotated with a version constraint.  For example,
+                        -- base >= 2, or foo >= 1.2 && < 1.3.  Asterisks can also be used such as
+                        -- foo == 1.2.*
+  main-is:              -- The name of the hs or lhs file containing the Main module.  The source file
+                        -- must be relative to one of the directories listed in hs-source-dirs.
+  hs-source-dirs:       -- The root directory for the module hierarchy.  Default is ".", the same
+                        -- directory as the cabal file.
+  other-modules:        -- A list of modulse used by the library or executable but not exposed to users.
+                        -- For an executable these would be auxiliary modules to be linked with the file
+                        -- named in the main-is field.
+
+-- A test suite is an optional, named section whose name is distinct from other test suites, executables
+-- and the package itself.   The type, main-is, and test-module fields are required.
+test-suite spec
+  type:                 -- The interface type and version of the test suite.  Only two are supported
+                        -- by cabal, exitcode-stdio-1.0 and detailed-0.9.  If the former is used,
+                        -- the main-is field is required.  If the latter is used, the
+                        -- test-module field is required.  The latter suite is preferred nowadays.
+  main-is:              -- The name of the haskell file that returns an exit code indicating 
+                        -- success or failure of tests.  It will contain a main function.
+  test-module:          -- The name of the module that exports a tests :: IO [Test]  name.
+  build-depends:        -- (see Executables above)
+  other-modules:        -- A list of modulse used by the library or executable but not exposed to users.
+                        -- For an executable these would be auxiliary modules to be linked with the file
+                        -- named in the main-is field.
+  hs-source-dirs:       -- root directories for the module hierarchy.  The main-is file must be in
+                        -- one of these directories.
+  ghc-options:          -- Additional options for GHC.  It is preferred to use the extensions field.
+                        -- Options required by specific modules should use an OPTIONS_GHC pragma in
+                        -- the module itself.
+  extensions:           -- A list of haskell extensions used by every module. Valid extension names
+                        -- are constructors of the Extension type (such as CPP, Generics,
+                        -- TemplateHaskell, etc.  Options required by specific modules should use an
+                        -- OPTIONS_GHC pragma in the module itself.
+                       
+
+-- The source-repository sections allow other tools to locate the package source.
+source-repository head   -- 'head' or 'this' can be specified.  if this is used, the tag field
+                            must also be included, otherwise it is not included.
+  type:                  -- One of darcs, git, svn, csv, mercurial (or hg), bazaar (or bzr),
+                         -- arch, monotone.
+  location:              -- the location of the repository.  The exact form depends on
+                         -- the repository type. For darcs, http://code.haskell.org/foo/, 
+                         -- for git, git://github.com/foo/bar.git, for cvs,
+                         -- anoncvs@cvs.foo.org/cvs
+  module:                -- required only for the cvs type, it specifies a named repository.
+  branch:                -- optional, the name of a specific cvs, svn, or git branch to use
+  tag:                   -- used with a 'this' repository kind to identify the state of a
+                         -- repository corresponding to a particular version.  This field
+                         -- is required for the 'this' repository kind.
+  subdir:                -- optional, for those projects that contain multiple packages in
+                         -- different directories.  The subdir is the name of the path to 
+                         -- the directory containing the source package.
+
+
+-- benchmark sections are optional and describe named benchmarks that can be run using the
+-- 'cabal bench' command after running 'cabal build'.
+benchmark benchmark-name
+  type:                  -- the interface type and version of the benchmark.  Only 
+                            exitcode-stdio-1.0 is supported.
+  main-is:               -- the name of the hs or lhs file containing the Main module
+                         -- that runs the benchmarks.
+
+
