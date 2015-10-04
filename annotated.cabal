@@ -63,35 +63,94 @@ extra-source-files:     -- A list of additional files to be included in source d
 extra-tmp-files:        -- A list of additional files or directories to be removed by 'setup clean'.
                         -- These would be additional files created by additional hooks.
 
--- An optional library section.  There should be at most one such section.  The exposed-modules
--- field is required.
-library
-  exposed-modules:      -- A list of modules added by this package.
-  other-modules:        -- A list of modules used by the library or executable but not exposed to users.
-                        -- For a library these would be hidden modules of the library.
-  exposed:              -- Either True or False, default is True.  Use False to support older packages
-                        -- whose modules may conflict due to a flat namespace.
-  default-language:     -- ? 
-  build-depends:        -- 
-  ghc-options:
-  extensions:
-
 -- an optional section that describes an executable program contained in the package.  The section
 -- header must include a name for the executable that must not contain spaces.  There should be one
 -- such section for each executable to be provided by the package.
 executable program1
+  main-is:              -- The name of the hs or lhs file containing the Main module.  The source file
+                        -- must be relative to one of the directories listed in hs-source-dirs.
   build-depends:        -- A comma-separated list of packages needed to build this one.
                         -- Each package can be annotated with a version constraint.  For example,
                         -- base >= 2, or foo >= 1.2 && < 1.3.  Asterisks can also be used such as
                         -- foo == 1.2.*
-  main-is:              -- The name of the hs or lhs file containing the Main module.  The source file
-                        -- must be relative to one of the directories listed in hs-source-dirs.
-  hs-source-dirs:       -- The root directory for the module hierarchy.  Default is ".", the same
-                        -- directory as the cabal file.
-  other-modules:        -- A list of modulse used by the library or executable but not exposed to users.
+  other-modules:        -- A list of modules used by the library or executable but not exposed to users.
                         -- For an executable these would be auxiliary modules to be linked with the file
                         -- named in the main-is field.
-
+  hs-source-dirs:       -- The root directory for the module hierarchy.  Default is ".", the same
+                        -- directory as the cabal file.
+  extensions:           -- A list of haskell extensions used by every module. Valid extension names
+                        -- are constructors of the Extension type (such as CPP, Generics,
+                        -- TemplateHaskell, etc.  Options required by specific modules should use an
+                        -- OPTIONS_GHC pragma in the module itself.
+  build-tools:          -- A list of programs possibly annotated with versions, needed to build this
+                        -- package.
+  buildable:            -- True if buildable, False otherwise.
+  ghc-options:          -- Additional options for GHC.  It is preferred to use the extensions field.
+                        -- Options required by specific modules should use an OPTIONS_GHC pragma in
+                        -- the module itself.
+  ghc-options:          -- Additional GHC options, but it's preferred to use the extensions field.
+  ghc-prof-options:     -- Additional GHC options when the package is built with profiling enabled.
+  ghc-shared-options:   -- Additional GHC options for when the package is built as a shared library.
+  includes:             -- A list of header files to be included in any compilations using C.
+  install-includes:     -- A list of header files from this package to be installed into $libdir/includes
+                        -- when the package is installed.
+  include-dirs:         -- A list of directories to search for header files when preprocessing with c2hs,
+                        -- hsc2hs, cpphs or the C preprocessor, and also when compiling via C.
+  c-sources:            -- A list of C source files to be compiled and linked with the Haskell files.
+  js-sources:           -- A list of Javascript source files to be linked with the Haskell files.
+  extra-libraries:      -- A list of extra libraries to link with.
+  extra-ghci-libraries: -- A list of extra libraries to be used instead of extra-libraries when the
+                        -- package is loaded with GHCi.
+  extra-lib-dirs:       -- A list of directories to search for libraries.
+  cc-options:           -- Command line arguments to be passed to the C compiler.
+  cpp-options:          -- Command-line arguments for preprocessing Haskell code.
+  ld-options:           -- Command-line arguments to be passed to the linker.
+  pkgconfig-depends:    -- A list of pkg-config packages needed to build this package. 
+  frameworks:           -- a list of frameworks to link to on Darwin/MacOSX systems.  Ignored on other
+                        -- platforms.
+ 
+-- An optional library section that should be included if the package is a library.  It must
+-- contain the exposed-modules field.
+library
+  exposed-modules:      -- A list of modules added by this package.
+  reexported-modules:   -- Supported only in GHC 7.10 and later.  A list of modules to reexport from
+                        -- The syntax of each element is 'orig-pkg:Name as NewName' to reexport module
+                        -- 'Name' from 'orig-pkdg' with the new name 'NewName'.
+  exposed:              -- Either True or False, default is True.  Use False to support older packages
+                        -- whose modules may conflict due to a flat namespace.
+  build-depends:        -- A comma-separated list of packages needed to build this one.
+                        -- Each package can be annotated with a version constraint.  For example,
+                        -- base >= 2, or foo >= 1.2 && < 1.3.  Asterisks can also be used such as
+                        -- foo == 1.2.*
+  other-modules:        -- A list of modules used by the library or executable but not exposed to users.
+                        -- For an executable these would be auxiliary modules to be linked with the file
+                        -- named in the main-is field.
+  hs-source-dirs:       -- The root directory for the module hierarchy.  Default is ".", the same
+                        -- directory as the cabal file.
+  extensions:           -- A list of haskell extensions used by every module. Valid extension names
+                        -- are constructors of the Extension type (such as CPP, Generics,
+                        -- TemplateHaskell, etc.  Options required by specific modules should use an
+                        -- OPTIONS_GHC pragma in the module itself.
+  build-tools:          -- (see the executable section for the remaining field definitions)
+  buildable:            -- 
+  ghc-options:          -- 
+  ghc-prof-options:     --
+  ghc-shared-options:   --
+  includes:             -- 
+  install-includes:     --
+  include-dirs:         --
+  c-sources:            --
+  js-sources:           -- 
+  extra-libraries:      --
+  extra-ghci-libraries: --
+  extra-lib-dirs:       --
+  cpp-options:          --
+  ld-options:           --
+  pkgconfig-depends:    --
+  frameworks:           --
+ 
+    
+ 
 -- A test suite is an optional, named section whose name is distinct from other test suites, executables
 -- and the package itself.   The type, main-is, and test-module fields are required.
 test-suite spec
@@ -108,14 +167,6 @@ test-suite spec
                         -- named in the main-is field.
   hs-source-dirs:       -- root directories for the module hierarchy.  The main-is file must be in
                         -- one of these directories.
-  ghc-options:          -- Additional options for GHC.  It is preferred to use the extensions field.
-                        -- Options required by specific modules should use an OPTIONS_GHC pragma in
-                        -- the module itself.
-  extensions:           -- A list of haskell extensions used by every module. Valid extension names
-                        -- are constructors of the Extension type (such as CPP, Generics,
-                        -- TemplateHaskell, etc.  Options required by specific modules should use an
-                        -- OPTIONS_GHC pragma in the module itself.
-                       
 
 -- The source-repository sections allow other tools to locate the package source.
 source-repository head   -- 'head' or 'this' can be specified.  if this is used, the tag field
