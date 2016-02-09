@@ -88,7 +88,6 @@ executable program1
   ghc-options:          -- Additional options for GHC.  It is preferred to use the extensions field.
                         -- Options required by specific modules should use an OPTIONS_GHC pragma in
                         -- the module itself.
-  ghc-options:          -- Additional GHC options, but it's preferred to use the extensions field.
   ghc-prof-options:     -- Additional GHC options when the package is built with profiling enabled.
   ghc-shared-options:   -- Additional GHC options for when the package is built as a shared library.
   includes:             -- A list of header files to be included in any compilations using C.
